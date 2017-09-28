@@ -35,7 +35,7 @@ class TestClarity(TestCase):
                 "Invalid format for URI. Should be "
                 "'https://roflms801a.mayo.edu/api/v2\[/endpoint\]"
         ):
-            clarity = Clarity('https://roflms801a.mayo.edu/apiv2')
+            Clarity('https://roflms801a.mayo.edu/apiv2')
 
     def test_post_bad_password(self):
         self.fail()
