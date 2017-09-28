@@ -9,6 +9,13 @@ class Clarity:
         self.base_uri = 'https://' + host + '/api/v2/'
 
     def create_batch_xml_for_post(self, luids, link_type):
+        """
+        Returns XML request for a batch endpoint.  Luids are combined with the 
+        base uri to generate link elements.  
+        :param luids: iterable object containing luids for the batch request
+        :param link_type: type of luids provided
+        :return: decoded string output from etree with pretty printing.
+        """
         nsmap = {'ri': 'http://genologics.com/ri'}
         dom = etree.Element('{%s}links' % nsmap['ri'], nsmap=nsmap)
 
