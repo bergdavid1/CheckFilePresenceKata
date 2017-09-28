@@ -36,3 +36,12 @@ class TestClarity(TestCase):
                 "'https://roflms801a.mayo.edu/api/v2\[/endpoint\]"
         ):
             clarity = Clarity('https://roflms801a.mayo.edu/apiv2')
+
+    def test_post_bad_password(self):
+        self.fail()
+
+    def test_post_bad_xml(self):
+        self.fail()
+
+    def test_post_good_xml(self):
+        self.fail()
