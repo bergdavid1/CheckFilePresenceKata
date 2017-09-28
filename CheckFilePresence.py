@@ -3,10 +3,28 @@ from lxml import etree
 
 
 class Clarity:
-    def __init__(self, host, password=None, username=None):
+    def __init__(self, host, username=None, password=None):
+        """
+        Initializes instance values required for API authentication.
+        TODO... Look into use of class attributes.
+        :param host: FQDN or full URI of api endpoint. 
+        :param username: username of account with API access
+        :param password: password for specified API account
+        """
         self.password = password
         self.username = username
-        self.base_uri = 'https://' + host + '/api/v2/'
+        parts = host.split('/')
+        if len(parts) == 1:
+            self.base_uri = 'https://' + host + '/api/v2/'
+        elif 1 < len(parts) < 5:
+            raise(
+                ValueError(
+                    "Invalid format for URI. Should be "
+                    "'https://roflms801a.mayo.edu/api/v2[/endpoint]"
+                )
+            )
+        else:
+            self.base_uri = '/'.join(parts[0:5]) + '/'
 
     def create_batch_xml_for_post(self, luids, link_type):
         """

@@ -22,16 +22,17 @@ class TestClarity(TestCase):
         )
 
     def test___init___good_uri(self):
-        clarity = Clarity('https://roflms801a.mayo.edu/api/v2')
+        clarity = Clarity('https://roflms801a.mayo.edu/api/v2/step/24-12345/details')
 
         self.assertEqual(
-            clarity.base_uri, 'https://roflms801a.mayo.edu/api/v2/step/24-12345/details',
+            clarity.base_uri, 'https://roflms801a.mayo.edu/api/v2/',
             "It should extract the base uri from a full uri."
         )
 
     def test___init___bad_uri(self):
         with self.assertRaisesRegex(
                 ValueError,
-                "Invalid format for URI. Should be 'https://roflms801a.mayo.edu/api/v2[/endpoint]"
+                "Invalid format for URI. Should be "
+                "'https://roflms801a.mayo.edu/api/v2\[/endpoint\]"
         ):
-            clarity = Clarity('https://roflms801a.mayo.edu/api/v2')
+            clarity = Clarity('https://roflms801a.mayo.edu/apiv2')
