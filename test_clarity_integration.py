@@ -1,3 +1,5 @@
+import logging
+
 from lxml import etree
 import unittest
 
@@ -5,7 +7,7 @@ import CheckFilePresence
 
 
 username = 'apiuser'
-password = 'PasswordNeeded'
+password = 'PasswordNeeded'  # Set to PasswordNeeded before committing.
 
 
 @unittest.skipIf(
@@ -59,12 +61,13 @@ class TestClarity(unittest.TestCase):
             )
 
     def test_post_good_xml(self):
-
+        logging.basicConfig(level=logging.INFO)
         xml = """
             <ri:links xmlns:ri="http://genologics.com/ri">
               <link uri="https://roflms801a.mayo.edu/api/v2/artifacts/92-164028" rel="artifacts"/>
               <link uri="https://roflms801a.mayo.edu/api/v2/artifacts/92-164027" rel="artifacts"/>
               <link uri="https://roflms801a.mayo.edu/api/v2/artifacts/92-164026" rel="artifacts"/>
+              <link uri="https://roflms801a.mayo.edu/api/v2/artifacts/92-00" rel="artifacts"/>
             </ri:links>
         """
 

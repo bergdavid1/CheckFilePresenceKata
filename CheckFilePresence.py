@@ -68,4 +68,15 @@ class Clarity:
             logging.warning("Response text:\n" + response.text)
             raise UserWarning('Received API exception. Message: ' + message)
 
+        logging.warning("URI: " + uri)
+        logging.info("Request:\n" + xml)
+        logging.info("Response text:\n" + response.text)
         return response.text
+
+    def missing_files(self, file_list, artifact_list):
+        """
+        parse dom to determine which if any are missing.
+        look to file:file element, then name element.
+        :return: None, or a list of missing filenames.
+        """
+        pass
