@@ -1,5 +1,4 @@
 from lxml import etree
-from unittest import TestCase, mock
 import unittest
 
 import CheckFilePresence
@@ -12,9 +11,14 @@ password = 'PasswordNeeded'
 @unittest.skipIf(
     password == 'PasswordNeeded',
     'Password is required for integration test but do not store in git.')
-class TestClarity(TestCase):
+class TestClarity(unittest.TestCase):
+    def setUp(self):
+        self.api = CheckFilePresence.Clarity('roflms801a.mayo.edu')
+        self.api.username = username
+        self.api.password = password
+
     def test_post_bad_password(self):
-        api = CheckFilePresence.Clarity('roflms801a.mayo.edu')
+        api = self.api
         api.username = 'apiuser'
         api.password = 'BadPassword',
 
@@ -25,10 +29,9 @@ class TestClarity(TestCase):
             )
 
     def test_post_bad_username(self):
-        api = CheckFilePresence.Clarity('roflms801a.mayo.edu')
+        api = self.api
         api.username = 'BadUser'
         api.password = 'BadPassword',
-
         with self.assertRaisesRegex(UserWarning, 'Bad Credentials'):
             api.post(
                 'https://roflms801a.mayo.edu/api/v2/artifacts/batch/retrieve',
@@ -36,10 +39,7 @@ class TestClarity(TestCase):
             )
 
     def test_post_good_credentials_bad_xml(self):
-        api = CheckFilePresence.Clarity('roflms801a.mayo.edu')
-        api.username = username
-        api.password = password
-
+        api = self.api
         with self.assertRaisesRegex(UserWarning, 'Received API exception. Message:'):
             api.post(
                 'https://roflms801a.mayo.edu/api/v2/artifacts/batch/retrieve',
@@ -51,23 +51,12 @@ class TestClarity(TestCase):
         api.password = password
 
         send_xml = "<this>Bad XML</that>"
-        return_xml = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-            <exc:exception xmlns:exc="http://genologics.com/ri/exception">
-                <message>Description of Error from API</message>
-            </exc:exception>
-            """
-        response = mock.Mock()
-        response.text = return_xml
-
-        original_function = CheckFilePresence.requests.post
-        CheckFilePresence.requests.post = mock.Mock(return_value=response)
 
         with self.assertRaisesRegex(UserWarning, 'Received API exception. Message:'):
             api.post(
                 'https://roflms801a.mayo.edu/api/v2/artifacts/batch/retrieve',
                 send_xml
             )
-        CheckFilePresence.requests.post = original_function
 
     def test_post_good_xml(self):
 
@@ -79,9 +68,7 @@ class TestClarity(TestCase):
             </ri:links>
         """
 
-        api = CheckFilePresence.Clarity('roflms801a.mayo.edu')
-        api.username = username
-        api.password = password
+        api = self.api
 
         response_text = api.post(
                 'https://roflms801a.mayo.edu/api/v2/artifacts/batch/retrieve',
