@@ -1,5 +1,6 @@
-# import requests
+import requests
 from lxml import etree
+import logging
 
 
 class Clarity:
@@ -39,8 +40,32 @@ class Clarity:
 
         for luid in luids:
             link = etree.Element('link')
-            link.attrib['uri'] = self.base_uri + 'artifact/' + luid
+            link.attrib['uri'] = self.base_uri + 'artifacts/' + luid
             link.attrib['rel'] = link_type
             dom.append(link)
 
         return etree.tostring(dom, pretty_print=True).decode('utf8')
+
+    def post(self, uri, xml):
+        response = requests.post(
+            url=uri, data=xml,
+            auth=(self.username, self.password),
+            headers={'Content-Type': 'application/xml'},
+        )
+
+        if 'HTTP Status 401 - Bad credentials' in response.text:
+            logging.warning("URI: " + uri)
+            logging.warning("Request:\n" + xml)
+            logging.warning("Response text:\n" + response.text)
+            raise UserWarning('Bad Credentials')
+
+        if 'exc:exception' in response.text:
+            dom = etree.fromstring(response.text.encode('utf8'))
+            logging.warning("URI: " + uri)
+            logging.warning("Request:\n" + xml)
+            message = dom.findall('message')[0].text
+            logging.warning("Response: " + message)
+            logging.warning("Response text:\n" + response.text)
+            raise UserWarning('Received API exception. Message: ' + message)
+
+        return response.text
